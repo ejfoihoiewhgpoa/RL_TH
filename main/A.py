@@ -11,7 +11,7 @@ print("\nCHẠY VỚI HÀNH ĐỘNG CỐ ĐỊNH (luôn là 0: đẩy trái)")
 for step in range(200):
     action = 0  # luôn luôn chọn hành động 0
     obs, reward, terminated, truncated, info = env.step(action)
-    
+
     print(f"Bước {step}: Observation = {obs}, Reward = {reward}")
     
     if terminated or truncated:
