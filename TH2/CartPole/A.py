@@ -1,0 +1,45 @@
+import gymnasium as gym
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+env = gym.make("CartPole-v0", render_mode="human")
+
+obs, info = env.reset(seed=123)
+frames = []
+
+for step in range(200):
+    action = env.action_space.sample()  # hành động ngẫu nhiên
+    obs, reward, terminated, truncated, info = env.step(action)
+    
+    frame = env.render()  # trả về mảng numpy (ảnh RGB) thay vì mở cửa sổ
+    frames.append(frame)
+    
+    if terminated or truncated:
+        obs, info = env.reset()
+
+env.close()
+
+print(f"Đã thu thập {len(frames)} khung hình.")
+
+# Hiển thị 1 khung hình để kiểm tra
+plt.imshow(frames[0])
+plt.axis("off")
+plt.title("Khung hình đầu tiên")
+plt.show()
+
+# Tạo animation từ danh sách frames
+fig, ax = plt.subplots()
+ax.axis("off")
+img = ax.imshow(frames[0])
+
+def update(i):
+    img.set_data(frames[i])
+    return [img]
+
+ani = animation.FuncAnimation(fig, update, frames=len(frames), interval=50, blit=True)
+
+# Lưu animation thành file GIF
+ani.save("mountaincar_animation.gif", writer="pillow", fps=20)
+print("Đã lưu animation vào mountaincar_animation.gif")
+
+plt.close()
