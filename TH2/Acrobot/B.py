@@ -2,6 +2,7 @@ import gymnasium as gym
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 env = gym.make("Acrobot-v1")
 u = env.unwrapped
@@ -10,21 +11,6 @@ u.LINK_LENGTH_1 = 1.0
 u.LINK_LENGTH_2 = 1.5   # đổi độ dài link
 t = 2.0
 u.AVAIL_TORQUE = [-t, 0.0, t]  # đổi torque
-
-rewards = []
-for i in range(50):
-    obs, info = env.reset(seed=i)
-    total = 0
-    for step in range(500):
-        action = env.action_space.sample()
-        obs, r, terminated, truncated, info = env.step(action)
-        total += r
-        if terminated or truncated:
-            break
-    rewards.append(total)
-
-print("Avg reward:", np.mean(rewards))
-env.close()
 
 # =========================
 # Random policy
@@ -166,6 +152,10 @@ plt.title("Acrobot Performance under Different Parameters")
 plt.xticks(rotation=30)
 plt.tight_layout()
 
+os.makedirs(
+    "D:/reinforcement_learning/RL_TH/TH2/figures",
+    exist_ok=True
+)
 # Lưu ảnh
 plt.savefig("D:/reinforcement_learning/RL_TH/TH2/figures/acrobot_comparison.png", dpi=300)
 
