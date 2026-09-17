@@ -1,13 +1,36 @@
 import gymnasium as gym
-from gymnasium.utils.play import play
+import pygame
 
-env = gym.make("Acrobot-v1", render_mode="rgb_array")
+env = gym.make("Acrobot-v1", render_mode="human")
+observation, info = env.reset()
 
-# Acrobot action: 0 = torque -1, 1 = torque 0, 2 = torque +1
-keys_to_action = {
-    "a": 0,   # phím A = torque -1
-    "d": 2,   # phím D = torque +1
-    # không nhấn gì = noop (torque 0)
-}
+print("--- ĐIỀU KHIỂN ACROBOT ---")
+print("Phím 'A': Mô-men xoắn ngược chiều kim đồng hồ (Action 0)")
+print("Phím 'S': Không tác dụng lực (Action 1)")
+print("Phím 'D': Mô-men xoắn thuận chiều kim đồng hồ (Action 2)")
+print("Bấm ESC để thoát.")
 
-play(env, keys_to_action=keys_to_action, noop=1, fps=15)  # giảm từ 30 xuống 15
+running = True
+action = 1  # Mặc định 1 là không tác dụng lực
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                action = 0
+            elif event.key == pygame.K_s:
+                action = 1
+            elif event.key == pygame.K_d:
+                action = 2
+            elif event.key == pygame.K_ESCAPE:
+                running = False
+
+    observation, reward, terminated, truncated, info = env.step(action)
+
+    if terminated or truncated:
+        print("Chúc mừng! Bạn đã văng chạm vạch đích (hoặc hết giờ)!")
+        observation, info = env.reset()
+
+env.close()
